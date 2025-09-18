@@ -1,4 +1,4 @@
-# lol
+# laboratoriti
 
 # Лабораторная работа 1
 ## Задание 1
@@ -58,42 +58,42 @@ print(f'Длина (символов): {len(fio)+2}')
 
 ## Задание 6 
 ```python
-kolich_ychast = int(input('in_1: '))
-ochno = 0
-zaochno = 0
-for i in range(kolich_ychast):
+kolich = int(input('in_1: '))
+ochno_ = 0
+zaochno_ = 0
+for i in range(kolich):
     ychastnik = input(f'in_{i+2}: ')
     if 'True' in ychastnik:
-        ochno +=1
+        ochno_ = ochno_+1
     else:
-        zaochno+=1
-print(f'out: {ochno} {zaochno}')
+        zaochno_ = zaochno_ +1
+print(f'out: {ochno_} {zaochno_}')
 ```
 ![zvezdochka#6](./images/lab01/ex06.png)
 
 ## Задание 7
 ```python
 vxod = input('in: ')
-slovo = ''
-index1 = 0 
-index2 = 0
+itog_ = ''
+index_1 = 0 
+index_2 = 0
 
 for i in range(len(vxod)):
     if vxod[i].isupper():
-        index1 = i 
+        index_1 = i 
         break
     else:
         continue 
 for i in range(len(vxod)):
     if vxod[i] in '0123456789':
-        index2 = i+1
+        index_2 = i+1
         break
     else:
         continue
-shag = index2 - index1
-for i in range(index1,len(vxod),shag):
-    slovo+=vxod[i]
-print(f'out: {slovo}')
+shag = index_2 - index_1
+for i in range(index_1,len(vxod),shag):
+    itog_+=vxod[i]
+print(f'out: {itog_}')
 ```
 ![zvezdochka#7](./images/lab01/ex07.png)
 

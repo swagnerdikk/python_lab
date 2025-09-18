@@ -1,5 +1,5 @@
 vxod = input('in: ')
-itog = ''
+itog_ = ''
 index_1 = 0 
 index_2 = 0
 
@@ -17,5 +17,5 @@ for i in range(len(vxod)):
         continue
 shag = index_2 - index_1
 for i in range(index_1,len(vxod),shag):
-    itog+=vxod[i]
-print(f'out: {itog}')
+    itog_+=vxod[i]
+print(f'out: {itog_}')

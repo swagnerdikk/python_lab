@@ -124,7 +124,7 @@ def flatten(mat: list[list | tuple]) -> list:
     res = []
     for row in mat:
         if not isinstance(row,(list,tuple)):
-            return 'ValueError'
+            return 'TypeError'
         if isinstance(row,(list,tuple)):
             res.extend(row)
     return res

@@ -193,7 +193,7 @@ def format_record(rec: tuple[str, str, float]) -> str:
     if len(rec) != 3:
         return 'ValueError' #Отсутствуют элементы 
     fio, group,gpa = rec
-    if  group == '' or gpa > 5 or gpa < 0:
+    if  group == '' or gpa > 5 or gpa < 0 or fio == '':
         return 'ValueError' #Неверные данные(0<gpa<5)
     if not isinstance(gpa,(int,float)) or not isinstance(group,str) or not isinstance(fio,str):
         return 'TypeError' #Неверный тип данных  

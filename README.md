@@ -100,9 +100,9 @@ print(f'out: {itog_}')
 # Лабораторная работа 2
 ## Задание 1
 ```python
-def min_max(nums: list[float | int]) -> tuple[float | int, float | int]:
+ddef min_max(nums: list[float | int]) -> tuple[float | int, float | int]:
     if not nums:
-        raise 'VallueError'
+        raise ValueError
     return (min(nums), max(nums))
 print(min_max([3, -1, 5, 5, 0]))
 print(min_max([42]))
@@ -124,7 +124,7 @@ def flatten(mat: list[list | tuple]) -> list:
     res = []
     for row in mat:
         if not isinstance(row,(list,tuple)):
-            raise 'TypeError'
+            raise ValueError
         if isinstance(row,(list,tuple)):
             res.extend(row)
     return res
@@ -132,7 +132,7 @@ print(flatten([[1, 2], [3, 4]]))
 print(flatten([[1, 2], (3, 4, 5)]))  
 print(flatten([[1], [], [2, 3]]))  
 print(flatten([[1, 2], "ab"])) 
-print('#'*18)       
+print('#'*18)
 ```
 ![arrays](./images/lab02/ex01.png)
 
@@ -143,7 +143,7 @@ def transpose(mat: list[list[float | int]]) -> list[list]:
         return []
     rvan = [len(x) for x in mat]
     if len(set(rvan))!=1:
-        raise 'VallueError'
+        raise ValueError
     return [list(col) for col in zip(*mat)]
 print(transpose([[1, 2, 3]]))
 print(transpose([[1], [2], [3]]))
@@ -156,7 +156,7 @@ print('')
 def row_sums(mat: list[list[float | int]]) -> list[float]:
     rvan = [len(x) for x in mat]
     if len(set(rvan)) != 1:
-        raise 'ValueError'
+        raise ValueError
     res = []
     for i in range(len(mat)):
         summ = 0
@@ -172,7 +172,7 @@ print('')
 def col_sums(mat: list[list[float | int]]) -> list[float]:
     rvan = [len(x) for x in mat]
     if len(set(rvan)) != 1:
-        raise 'ValueError'
+        raise ValueError
     res = []
     for i in range(len(mat[0])):
         s = 0
@@ -193,7 +193,7 @@ def format_record(rec: tuple[str, str, float]) -> str:
     if not isinstance(rec, tuple):
         raise TypeError #Проверка на кортеж
     if len(rec) != 3:
-        raise 'ValueError' #Отсутствуют элементы 
+        raise ValueError #Отсутствуют элементы 
     fio, group,gpa = rec
     if  group == '' or gpa > 5 or gpa < 0 or fio == '':
         raise ValueError #Неверные данные(0<gpa<5)

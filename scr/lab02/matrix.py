@@ -3,7 +3,7 @@ def transpose(mat: list[list[float | int]]) -> list[list]:
         return []
     rvan = [len(x) for x in mat]
     if len(set(rvan))!=1:
-        return 'VallueError'
+        raise ValueError
     return [list(col) for col in zip(*mat)]
 print(transpose([[1, 2, 3]]))
 print(transpose([[1], [2], [3]]))
@@ -16,7 +16,7 @@ print('')
 def row_sums(mat: list[list[float | int]]) -> list[float]:
     rvan = [len(x) for x in mat]
     if len(set(rvan)) != 1:
-        return 'ValueError'
+        raise ValueError
     res = []
     for i in range(len(mat)):
         summ = 0
@@ -32,7 +32,7 @@ print('')
 def col_sums(mat: list[list[float | int]]) -> list[float]:
     rvan = [len(x) for x in mat]
     if len(set(rvan)) != 1:
-        return 'ValueError'
+        raise ValueError
     res = []
     for i in range(len(mat[0])):
         s = 0

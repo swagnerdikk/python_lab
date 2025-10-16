@@ -68,3 +68,12 @@ if __name__ == '__main__':
     main()
 ```
 ![part2](/images/lab03/text_stats.png)
+
+## read_stdin() -> str
+Cчитывает строку с консоли 
+
+## stats(colvo_slov: int, unik_slova: int, top_items)
+Выводит параметры 
+
+## main
+Содержит функции, которые обрабатывают строчку, и вызывает stats 

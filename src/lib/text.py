@@ -47,9 +47,9 @@ def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
     res = list(freq.items())
     res.sort(key = lambda i: (-i[1],i[0]))
     return res
-print(top_n({"bb":2,"aa":2,"cc":3}))
-print('#'*18)
-print(' '*18)
+# print(top_n({"bb":2,"aa":2,"cc":3}))
+# print('#'*18)
+# print(' '*18)
 
 
 

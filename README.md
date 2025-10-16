@@ -219,7 +219,7 @@ print('#'*18)
 ```
 ![tuples](./images/lab02/ex03.png)
 
-# Лабораторная работа 2
+# Лабораторная работа 3
 ## Задание 1 (Функции)
 ```python
 def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:

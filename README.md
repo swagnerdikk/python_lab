@@ -218,3 +218,99 @@ print(format_record(("Петров Пётр Петрович", 5,4.0)))
 print('#'*18)
 ```
 ![tuples](./images/lab02/ex03.png)
+
+# Лабораторная работа 2
+## Задание 1 (Функции)
+```python
+def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
+    if text == '': return ''
+    if casefold: 
+        text = text.casefold()
+    if yo2e:
+        text = text.replace('ё','е').replace('Ё','Е')
+    text = ' '.join(text.split())
+    return text
+print(normalize("ПрИвЕт\nМИр\t"))
+print(normalize("ёжик, Ёлка"))
+print(normalize("Hello\r\nWorld"))
+print(normalize("  двойные   пробелы  "))
+print('#'*18)
+print(' '*18)
+
+def tokenize(text: str) -> list[str]:
+    tokenn = []
+    perederz = []
+    for simv in text+' ':
+        if simv.isalnum() or simv == '_':
+            perederz.append(simv)
+        elif simv == '-' and len(perederz)>=1 and perederz[-1].isalnum():
+            perederz.append(simv)        
+        else:
+            if len(perederz) >=1:   
+                tokenn.append(''.join(perederz))
+                perederz = []
+    return tokenn 
+print(tokenize("привет мир"))
+print(tokenize("hello,world!!!"))
+print(tokenize("по-настоящему круто"))
+print(tokenize("2025 год"))
+print(tokenize("emoji 😀 не слово"))
+print('#'*18)
+print(' '*18)
+
+def count_freq(tokens: list[str]) -> dict[str, int]:
+    slovar = {}
+    for token in tokens:
+        slovar[token] = slovar.get(token,0) +1
+    return slovar
+print(count_freq(["a","b","a","c","b","a"]))
+print('#'*18)
+print(' '*18) 
+
+def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+    res = list(freq.items())
+    res.sort(key = lambda i: (-i[1],i[0]))
+    return res
+print(top_n({"bb":2,"aa":2,"cc":3}))
+print('#'*18)
+print(' '*18)
+```
+![func](./images/lab03/text.png)
+
+## Задание 2 
+```python 
+import sys
+import os
+from pathlib import Path
+
+lib_path = Path(__file__).parent.parent / 'lib'
+sys.path.insert(0, str(lib_path))
+
+from text import tokenize, normalize, count_freq, top_n
+
+
+def read_stdin() -> str:
+    return sys.stdin.read()
+
+
+def stats(colvo_slov: int, unik_slova: int, top_items):
+    print(f'Всего слов: {colvo_slov}')
+    print(f'Уникальных слов: {unik_slova}')
+    print('Топ-5:')
+    for word, count in top_items:
+        print(f'{word}:{count}')
+
+
+def main():
+    text = read_stdin()
+    normalized = normalize(text)
+    tokens = tokenize(normalized)
+    freq_map = count_freq(tokens)
+    top = top_n(freq_map, 5)
+    stats(len(tokens), len(set(tokens)), top)
+
+
+if __name__ == '__main__':
+    main()
+```
+![text_stats](./images/lab03/text_stats.png)

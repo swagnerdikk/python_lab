@@ -30,10 +30,10 @@ def frequencies_from_text(text: str) -> dict[str, int]:
     tokens = tokenize(normalize(text))
     return Counter(tokens) 
 
-def sorted_word_counts(freq: dict[str, int]) -> list[tuple[str, int]]:
+def sorted_word(freq: dict[str, int]) -> list[tuple[str, int]]:
     return sorted(freq.items(), key=lambda x: (-x[1], x[0]))
 
-def write_report_to_csv(word_counts: list[tuple[str, int]], path: str | Path = "report.csv") -> None:
+def report_csv(word_counts: list[tuple[str, int]], path: str | Path = "report.csv") -> None:
     """
     Создаем отчет csv файлом
     word_counts: список кортежей 
@@ -46,9 +46,9 @@ def write_report_to_csv(word_counts: list[tuple[str, int]], path: str | Path = "
         for word, count in word_counts:
             l.writerow((word, count))
 
-sorted_list = sorted_word_counts(frequencies_from_text(nova_str))
+sorted_list = sorted_word(frequencies_from_text(nova_str))
 
-write_report_to_csv(sorted_list, "data/lab04/report.csv")
+report_csv(sorted_list, "data/lab04/report.csv")
 
 print(f'Всего слов: {len((nova_str).split())}')
 print(f'Уникальных слов: {len(set(tokenize(nova_str)))}')

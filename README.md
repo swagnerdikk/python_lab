@@ -360,7 +360,7 @@ write_csv(rows=[], path="data/lab04/check.csv", header='9')
 ### write_csv(rows=[], path="data/lab04/check.csv", header=None)
 ![3](./images/lab04/ex01(3).png)
 
-### write_csv(rows=[], path="data/lab04/check.csv", header='9')
+### write_csv(rows=[], path="data/lab04/check.csv", header='F')
 ![4](./images/lab04/ex01(4).png)
 
 ## Задание 2
@@ -370,12 +370,8 @@ from collections import Counter
 from pathlib import Path
 import os, sys
 
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from lib.text import tokenize, normalize, top_n, count_freq
-
-
 
 def read_text(path: str | Path, encoding: str = "utf-8") -> str:
     """
@@ -389,18 +385,16 @@ def read_text(path: str | Path, encoding: str = "utf-8") -> str:
         print('Файл не существует')
         sys.exit(-1)
 
-
 nova_str = read_text("data/lab04/input.txt")
-
 
 def frequencies_from_text(text: str) -> dict[str, int]:
     tokens = tokenize(normalize(text))
     return Counter(tokens) 
 
-def sorted_word_counts(freq: dict[str, int]) -> list[tuple[str, int]]:
+def sorted_word(freq: dict[str, int]) -> list[tuple[str, int]]:
     return sorted(freq.items(), key=lambda x: (-x[1], x[0]))
 
-def write_report_to_csv(word_counts: list[tuple[str, int]], path: str | Path = "report.csv") -> None:
+def report_csv(word_counts: list[tuple[str, int]], path: str | Path = "report.csv") -> None:
     """
     Создаем отчет csv файлом
     word_counts: список кортежей 
@@ -413,9 +407,8 @@ def write_report_to_csv(word_counts: list[tuple[str, int]], path: str | Path = "
         for word, count in word_counts:
             l.writerow((word, count))
 
-sorted_list = sorted_word_counts(frequencies_from_text(nova_str))
-
-write_report_to_csv(sorted_list, "data/lab04/report.csv")
+sorted_list = sorted_word(frequencies_from_text(nova_str))
+report_csv(sorted_list, "data/lab04/report.csv")
 
 print(f'Всего слов: {len((nova_str).split())}')
 print(f'Уникальных слов: {len(set(tokenize(nova_str)))}')
@@ -424,3 +417,8 @@ for word, count in top_n(Counter(tokenize(nova_str)), 5):
     print(f'{word}:{count}')
 
 print(f"Отчет выполнен и сохранен: data/lab04/report.csv")
+```
+### Консольный отчет (mini)
+![5](./images/lab04/ex02(1).png)
+### Report 
+![6](./images/lab04/ex02(2).png)

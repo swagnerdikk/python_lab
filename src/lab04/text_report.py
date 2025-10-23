@@ -20,7 +20,7 @@ def read_text(path: str | Path, encoding: str = "utf-8") -> str:
         return p.read_text(encoding=encoding)
     except FileNotFoundError:
         print('Файл не существует')
-        sys.exit(-1)
+        sys.exit(1)
 
 
 nova_str = read_text("data/lab04/input.txt")

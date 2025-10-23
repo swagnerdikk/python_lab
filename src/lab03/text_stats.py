@@ -5,7 +5,7 @@ from pathlib import Path
 lib_path = Path(__file__).parent.parent / 'lib'
 sys.path.insert(0, str(lib_path))
 
-from text import tokenize, normalize, count_freq, top_n
+from lib.text import tokenize, normalize, count_freq, top_n
 
 
 def read_stdin() -> str:

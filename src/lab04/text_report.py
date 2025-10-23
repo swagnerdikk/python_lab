@@ -24,8 +24,9 @@ def read_text(path: str | Path, encoding: str = "utf-8") -> str:
 
 
 nova_str = read_text("data/lab04/input.txt") #уместна проверка на txt файл
-#if arg[-3] + arg[-2] + arg [-1] == 'txt' = norm 
-
+#arg - подаваемое значение в функцию 
+#if arg[-1:-3] == 'txt' or 'csv = norm 
+#Проходит условие, можно рабоать дальше 
 
 
 def frequencies_from_text(text: str) -> dict[str, int]:

@@ -390,7 +390,7 @@ def read_text(path: str | Path, encoding: str = "utf-8") -> str:
 nova_str = read_text("data/lab04/input.txt") #уместна проверка на txt файл
 #arg - подаваемое значение в функцию 
 #if arg[-1:-3] == 'txt' or 'csv':
-#Проходит условие, можно рабоать дальше 
+#Проходит условие, можно работать дальше 
 
 def frequencies_from_text(text: str) -> dict[str, int]:
     tokens = tokenize(normalize(text))

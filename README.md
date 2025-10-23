@@ -350,14 +350,18 @@ write_csv([("word","count"),("test",3)], "data/lab04/check.csv", 'ddg')
 write_csv(rows=[], path="data/lab04/check.csv", header=None)
 write_csv(rows=[], path="data/lab04/check.csv", header='9')
 ```
+
+### print(read_text("data/lab04/input.txt"))
 ![1](./images/lab04/ex01(1).png)
-print(read_text("data/lab04/input.txt"))
+
+### write_csv([("word","count"),("test",3)], "data/lab04/check.csv", 'ddg') 
 ![2](./images/lab04/ex01(2).png)
-write_csv([("word","count"),("test",3)], "data/lab04/check.csv", 'ddg') 
+
+### write_csv(rows=[], path="data/lab04/check.csv", header=None)
 ![3](./images/lab04/ex01(3).png)
-write_csv(rows=[], path="data/lab04/check.csv", header=None)
+
+### write_csv(rows=[], path="data/lab04/check.csv", header='9')
 ![4](./images/lab04/ex01(4).png)
-write_csv(rows=[], path="data/lab04/check.csv", header='9')
 
 ## Задание 2
 ```python

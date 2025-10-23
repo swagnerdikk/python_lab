@@ -314,3 +314,109 @@ if __name__ == '__main__':
     main()
 ```
 ![text_stats](./images/lab03/text_stats.png)
+
+# Лабораторная работа 4
+## Задание 1
+```python
+from pathlib import Path
+import csv
+from typing import Iterable, Sequence
+
+def read_text(path: str | Path, encoding: str = "utf-8") -> str:
+    """
+    Читаем текст из файлов в одну строку 
+    Чтобы выбрать другую кодировку, просто меняем значение аргумента функции: 
+    read_text("...", "cp1251") - заменили utf-8 на cp1251
+    """
+    p = Path(path)
+    return p.read_text(encoding=encoding)
+# если нужно убрать личшние пробелы return ''.join(p.read_text(encoding=encoding).split())
+print(read_text("data/lab04/input.txt"))
+
+def write_csv(rows: list[tuple | list], path: str | Path, header: tuple[str, ...] | None = None) -> None:
+    """
+    Создаем или перезаписываем csv
+    + проверка длины строк на входе 
+    """
+    p = Path(path)
+    rows = list(rows)
+    for i in range(len(rows) - 1): 
+        if len(rows[i]) != len(rows[i + 1]): raise ValueError
+    with p.open("w", newline='', encoding="utf-8") as f:
+        w = csv.writer(f)
+        if header is not None: w.writerow(header)
+        for r in rows: w.writerow(r)
+write_csv([("word","count"),("test",3)], "data/lab04/check.csv", 'ddg') 
+write_csv(rows=[], path="data/lab04/check.csv", header=None)
+write_csv(rows=[], path="data/lab04/check.csv", header='9')
+```
+![1](./images/lab04/ex01(1).png)
+print(read_text("data/lab04/input.txt"))
+![2](./images/lab04/ex01(2).png)
+write_csv([("word","count"),("test",3)], "data/lab04/check.csv", 'ddg') 
+![3](./images/lab04/ex01(3).png)
+write_csv(rows=[], path="data/lab04/check.csv", header=None)
+![4](./images/lab04/ex01(4).png)
+write_csv(rows=[], path="data/lab04/check.csv", header='9')
+
+## Задание 2
+```python
+import csv
+from collections import Counter
+from pathlib import Path
+import os, sys
+
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from lib.text import tokenize, normalize, top_n, count_freq
+
+
+
+def read_text(path: str | Path, encoding: str = "utf-8") -> str:
+    """
+    Читаем текст из файла 
+    + обрабатваем несуществующий файл
+    """
+    try:
+        p = Path(path)
+        return p.read_text(encoding=encoding)
+    except FileNotFoundError:
+        print('Файл не существует')
+        sys.exit(-1)
+
+
+nova_str = read_text("data/lab04/input.txt")
+
+
+def frequencies_from_text(text: str) -> dict[str, int]:
+    tokens = tokenize(normalize(text))
+    return Counter(tokens) 
+
+def sorted_word_counts(freq: dict[str, int]) -> list[tuple[str, int]]:
+    return sorted(freq.items(), key=lambda x: (-x[1], x[0]))
+
+def write_report_to_csv(word_counts: list[tuple[str, int]], path: str | Path = "report.csv") -> None:
+    """
+    Создаем отчет csv файлом
+    word_counts: список кортежей 
+    path: путь, по которому будет сохраняться отчет csv 
+    """
+    p = Path(path)
+    with p.open("w", newline='', encoding="utf-8") as f:
+        l = csv.writer(f)
+        l.writerow(("word", "count"))
+        for word, count in word_counts:
+            l.writerow((word, count))
+
+sorted_list = sorted_word_counts(frequencies_from_text(nova_str))
+
+write_report_to_csv(sorted_list, "data/lab04/report.csv")
+
+print(f'Всего слов: {len((nova_str).split())}')
+print(f'Уникальных слов: {len(set(tokenize(nova_str)))}')
+print(f'Топ-5:')
+for word, count in top_n(Counter(tokenize(nova_str)), 5):
+    print(f'{word}:{count}')
+
+print(f"Отчет выполнен и сохранен: data/lab04/report.csv")

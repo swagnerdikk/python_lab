@@ -1,0 +1,21 @@
+[
+
+  {
+    "Имя": "Ivan",
+    "Фамилия": "Petrov",
+    "age": 21,
+    "city": "Moscow"
+  },
+  {
+    "Имя": "Anna",
+    "Фамилия": "Sidorova",
+    "age": 19,
+    "city": "Saint Petersburg"
+  },
+  {
+    "Имя": "Petr",
+    "Фамилия": "Ivanov",
+    "age": 23,
+    "city": "Kazan"
+  }
+]

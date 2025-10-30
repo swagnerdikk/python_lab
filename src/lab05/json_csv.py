@@ -37,7 +37,7 @@ def json_to_csv(json_path: str, csv_path: str) -> None:
             isxod.writeheader()
             isxod.writerows(dannie)
     except IOError as e:
-        raise IOError(f"Ошибка формата {e}")
+        raise IOError(f"Ошибка пути {e}")
 
 json_to_csv('data/lab05/samples/people.json', 'data/lab05/out/people_from_json.csv')
 
@@ -69,7 +69,7 @@ def csv_to_json(csv_path: str, json_path: str) -> None:
         with open(json_path, 'w', encoding='utf-8') as json_file:
             json.dump(rows, json_file, ensure_ascii=False, indent=2)
     except IOError as e:
-        raise IOError(f"Ошибка формата {e}")
+        raise IOError(f"Ошибка пути {e}")
 
 
 csv_to_json('data/lab05/samples/testik.csv', 'data/lab05/out/testik.json')

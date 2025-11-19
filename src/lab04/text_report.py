@@ -53,10 +53,10 @@ sorted_list = sorted_word(frequencies_from_text(nova_str))
 
 report_csv(sorted_list, "data/lab04/report.csv")
 
-print(f'Всего слов: {len((nova_str).split())}')
-print(f'Уникальных слов: {len(set(tokenize(nova_str)))}')
-print(f'Топ-5:')
-for word, count in top_n(Counter(tokenize(nova_str)), 5):
-    print(f'{word}:{count}')
+# print(f'Всего слов: {len((nova_str).split())}')
+# print(f'Уникальных слов: {len(set(tokenize(nova_str)))}')
+# print(f'Топ-5:')
+# for word, count in top_n(Counter(tokenize(nova_str)), 5):
+#     print(f'{word}:{count}')
 
-print(f"Отчет выполнен и сохранен: data/lab04/report.csv")
+# print(f"Отчет выполнен и сохранен: data/lab04/report.csv")

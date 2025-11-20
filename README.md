@@ -56,9 +56,9 @@ def main():
 if __name__ == "__main__":
     main()
 ```
-##cat
+##cat - вывод строк с номерами 
 ![cat](./images/lab06/cat.png)
-##stats
+##stats - вывод топ слов файла
 ![cat](./images/lab06/stats.png)
 ## Задание 2 
 ```python 
@@ -98,6 +98,7 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+##file operation
 ![sec](./images/lab06/sec.png)
 
 # Лабораторная работа 5

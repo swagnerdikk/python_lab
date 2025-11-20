@@ -28,8 +28,6 @@ def main():
         try:
             for i, line in enumerate(input_path.read_text(encoding='utf-8').splitlines()):
                 print(f"{i + 1}. {line}" if args.n else line)
-        except FileNotFoundError:
-            cat_pars.error(f"Файл не найден: '{args.input}'")
         except Exception as e:
             cat_pars.error(f"Ошибка при чтении файла: {e}")
             
@@ -46,8 +44,7 @@ def main():
             sorted_list = sorted_word(frequencies_from_text(new_str))
             for word, count in sorted_list[:args.top]:
                 print(f"{word}: {count}")
-        except FileNotFoundError:
-            stats_pars.error(f"Файл не найден: '{args.input}'")
+        
         except Exception as e:
             stats_pars.error(f"Ошибка при обработке файла: {e}")
 

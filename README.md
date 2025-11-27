@@ -1,5 +1,477 @@
 # laboratoriti
 
+
+
+# Лаборатораня работа 7 
+## Задание A
+```python 
+import pytest
+from src.lib.text import normalize, tokenize, count_freq, top_n
+
+
+"""Базовые случаи"""
+@pytest.mark.parametrize(
+    "source, expected",
+    [
+        ("ПрИвЕт\nМИр\t", "привет мир"),
+        ("ёжик, Ёлка", "ежик, елка"),
+        ("Hello\r\nWorld", "hello world"),
+        ("  двойные   пробелы  ", "двойные пробелы"),
+    ],
+)
+def test_normalize_basic(source, expected):
+    assert normalize(source) == expected
+
+
+"""Пустая строка"""
+def test_normalize_empty_string():
+    assert normalize("") == ""
+
+
+"""Только пробелы"""
+def test_normalize_whitespace_only():
+    assert normalize("   \t\n\r   ") == ""
+
+
+"""Нормализация чисел"""
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("test123", "test123"),
+        ("123test", "123test"),
+        ("abc def", "abc def"),
+    ],
+)
+def test_normalize_with_numbers(text, expected):
+    assert normalize(text) == expected
+
+
+"""Сохранение спецсимволов и пунктуации"""
+def test_normalize_special_characters():
+    assert normalize("hello, world!") == "hello, world!"
+    assert normalize("test@email.com") == "test@email.com"
+
+
+"""yo2e=False"""
+def test_normalize_with_yo2e_false():
+    assert normalize("ёжик", yo2e=False) == "ёжик"
+
+
+"""casefold=False"""
+def test_normalize_with_casefold_false():
+    assert normalize("ПрИвЕт", casefold=False) == "ПрИвЕт"
+    assert normalize("Hello", casefold=False) == "Hello"
+
+
+"""Базовые случаи токенизации"""
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("привет мир", ["привет", "мир"]),
+        ("hello,world!!!", ["hello", "world"]),
+        ("по-настоящему круто", ["по-настоящему", "круто"]),
+        ("2025 год", ["2025", "год"]),
+    ],
+)
+def test_tokenize_basic(text, expected):
+    assert tokenize(text) == expected
+
+
+"""Пустая строка"""
+def test_tokenize_empty_string():
+    assert tokenize("") == []
+
+
+"""Только знаки препинания"""
+def test_tokenize_only_punctuation():
+    assert tokenize("!@#$%^&*()") == []
+
+
+"""Токенизация с подчеркиваниями"""
+def test_tokenize_with_underscores():
+    assert tokenize("hello_world test_case") == ["hello_world", "test_case"]
+
+
+"""Множественные пробелы между словами"""
+def test_tokenize_multiple_spaces():
+    assert tokenize("hello     world") == ["hello", "world"]
+
+
+"""Токенизация слов с дефисами"""
+def test_tokenize_with_hyphens():
+    assert tokenize("self-driving-car") == ["self-driving-car"]
+    assert tokenize("-start middle- end-") == ["start", "middle-", "end-"]
+
+
+"""Смешанные символы"""
+def test_tokenize_mixed_content():
+    assert tokenize("test123 hello456world") == ["test123", "hello456world"]
+
+
+"""Перенос строк и табуляция"""
+def test_tokenize_newlines_and_tabs():
+    assert tokenize("hello\nworld\ttest") == ["hello", "world", "test"]
+
+
+"""Базовый случай подсчета частот"""
+def test_count_freq_basic():
+    tokens = ["a", "b", "a", "c", "b", "a"]
+    expected = {"a": 3, "b": 2, "c": 1}
+    assert count_freq(tokens) == expected
+
+
+"""Пустой список"""
+def test_count_freq_empty_list():
+    """Граничный случай: пустой список"""
+    assert count_freq([]) == {}
+
+
+"""Один токен"""
+def test_count_freq_single_token():
+    assert count_freq(["hello"]) == {"hello": 1}
+
+
+"""Все токены одинаковые"""
+def test_count_freq_all_same():
+    tokens = ["test", "test", "test", "test"]
+    assert count_freq(tokens) == {"test": 4}
+
+
+"""Все токены уникальные"""
+def test_count_freq_all_unique():
+    tokens = ["a", "b", "c", "d", "e"]
+    expected = {"a": 1, "b": 1, "c": 1, "d": 1, "e": 1}
+    assert count_freq(tokens) == expected
+
+
+"""Подсчет частот с числами"""
+def test_count_freq_with_numbers():
+    tokens = ["123", "abc", "123", "abc", "123"]
+    expected = {"123": 3, "abc": 2}
+    assert count_freq(tokens) == expected
+
+
+"""Базовый случай: топ-N по частоте"""
+def test_top_n_basic():
+    freq = {"apple": 5, "banana": 3, "cherry": 8, "date": 2}
+    result = top_n(freq, n=2)
+    assert result == [("cherry", 8), ("apple", 5), ("banana", 3), ("date", 2)]
+
+
+"""Сортировка по алфавиту при одинаковой частоте"""
+def test_top_n_tie_breaker():
+    freq = {"bb": 2, "aa": 2, "cc": 3}
+    result = top_n(freq, n=10)
+    assert result == [("cc", 3), ("aa", 2), ("bb", 2)]
+
+
+"""Пустой словарь"""
+def test_top_n_empty_dict():
+    assert top_n({}, n=5) == []
+
+
+"""Один элемент в словаре"""
+def test_top_n_single_item():
+    assert top_n({"test": 10}, n=5) == [("test", 10)]
+
+
+"""Все элементы с одинаковой частотой"""
+def test_top_n_all_same_frequency():
+    freq = {"dog": 1, "cat": 1, "bird": 1, "ant": 1}
+    result = top_n(freq, n=10)
+    assert result == [("ant", 1), ("bird", 1), ("cat", 1), ("dog", 1)]
+
+
+"""Когда n больше количества элементов"""
+def test_top_n_returns_all_when_n_larger():
+    freq = {"a": 1, "b": 2}
+    result = top_n(freq, n=100)
+    assert len(result) == 2
+    assert result == [("b", 2), ("a", 1)]
+
+
+"""Смесь частот и алфавита"""
+def test_top_n_complex_sorting():
+    freq = {"z": 5, "a": 5, "m": 5, "b": 3, "y": 3, "c": 1}
+    result = top_n(freq, n=10)
+    assert result == [("a", 5), ("m", 5), ("z", 5), ("b", 3), ("y", 3), ("c", 1)]
+```
+
+
+## Задание B
+```python 
+import pytest
+import json
+import csv
+from pathlib import Path
+from src.lab05.json_csv import json_to_csv, csv_to_json
+
+"""Базовая конвертация JSON -> CSV"""
+def test_json_to_csv_basic(tmp_path: Path):
+    src = tmp_path / "people.json"
+    dst = tmp_path / "people.csv"
+
+    data = [
+        {"name": "Alice", "age": "22"},
+        {"name": "Bob", "age": "25"},
+    ]
+    src.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    json_to_csv(str(src), str(dst))
+
+    with dst.open(encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+
+    assert len(rows) == 2
+    assert {"name", "age"} <= set(rows[0].keys())
+    assert rows[0]["name"] == "Alice"
+    assert rows[0]["age"] == "22"
+    assert rows[1]["name"] == "Bob"
+    assert rows[1]["age"] == "25"
+
+
+"""Конвертация с множественными полями"""
+def test_json_to_csv_multiple_fields(tmp_path: Path):
+    src = tmp_path / "data.json"
+    dst = tmp_path / "data.csv"
+
+    data = [
+        {"id": "1", "name": "John", "city": "Moscow", "salary": "50000"},
+        {"id": "2", "name": "Jane", "city": "Paris", "salary": "60000"},
+        {"id": "3", "name": "Jack", "city": "London", "salary": "55000"},
+    ]
+    src.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    json_to_csv(str(src), str(dst))
+
+    with dst.open(encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+
+    assert len(rows) == 3
+    assert {"id", "name", "city", "salary"} <= set(rows[0].keys())
+
+
+"""Тест формата (UTF-8)"""
+def test_json_to_csv_cyrillic(tmp_path: Path):
+    src = tmp_path / "russian.json"
+    dst = tmp_path / "russian.csv"
+
+    data = [
+        {"имя": "Алексей", "возраст": "30"},
+        {"имя": "Мария", "возраст": "28"},
+    ]
+    src.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    json_to_csv(str(src), str(dst))
+
+    with dst.open(encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+
+    assert len(rows) == 2
+    assert rows[0]["имя"] == "Алексей"
+    assert rows[1]["имя"] == "Мария"
+
+
+"""Файл не существует"""
+def test_json_to_csv_file_not_found(tmp_path: Path):
+    src = tmp_path / "nonexistent.json"
+    dst = tmp_path / "output.csv"
+
+    with pytest.raises(FileNotFoundError):
+        json_to_csv(str(src), str(dst))
+
+
+"""Некорректный JSON"""
+def test_json_to_csv_invalid_json(tmp_path: Path):
+    src = tmp_path / "invalid.json"
+    dst = tmp_path / "output.csv"
+
+    src.write_text("{ this is not valid json }", encoding="utf-8")
+
+    with pytest.raises(ValueError):
+        json_to_csv(str(src), str(dst))
+
+
+"""Пустой JSON"""
+def test_json_to_csv_empty_file(tmp_path: Path):
+    src = tmp_path / "empty.json"
+    dst = tmp_path / "output.csv"
+
+    src.write_text("[]", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="пуст"):
+        json_to_csv(str(src), str(dst))
+
+
+"""JSON не является списком"""
+def test_json_to_csv_not_list(tmp_path: Path):
+    src = tmp_path / "notlist.json"
+    dst = tmp_path / "output.csv"
+
+    data = {"name": "Alice", "age": 22}
+    src.write_text(json.dumps(data), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="список"):
+        json_to_csv(str(src), str(dst))
+
+
+"""Элементы списка не словари"""
+def test_json_to_csv_not_dict_elements(tmp_path: Path):
+    src = tmp_path / "notdict.json"
+    dst = tmp_path / "output.csv"
+
+    data = ["string1", "string2", "string3"]
+    src.write_text(json.dumps(data), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="словарями"):
+        json_to_csv(str(src), str(dst))
+
+
+"""Неверное расширение файла"""
+def test_json_to_csv_wrong_extension(tmp_path: Path):
+
+    src = tmp_path / "file.txt"
+    dst = tmp_path / "output.csv"
+
+    with pytest.raises(TypeError, match="расширение"):
+        json_to_csv(str(src), str(dst))
+
+
+"""Неверное расширение для CSV"""
+def test_json_to_csv_wrong_csv_extension(tmp_path: Path):
+    src = tmp_path / "file.json"
+    dst = tmp_path / "output.txt"
+
+    src.write_text('[{"name": "test"}]', encoding="utf-8")
+
+    with pytest.raises(TypeError, match="расширение"):
+        json_to_csv(str(src), str(dst))
+
+
+"""Базовая конвертация CSV -> JSON"""
+def test_csv_to_json_basic(tmp_path: Path):
+
+    src = tmp_path / "people.csv"
+    dst = tmp_path / "people.json"
+
+    with src.open("w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["name", "age"])
+        writer.writeheader()
+        writer.writerow({"name": "Alice", "age": "22"})
+        writer.writerow({"name": "Bob", "age": "25"})
+
+    csv_to_json(str(src), str(dst))
+
+    with dst.open(encoding="utf-8") as f:
+        data = json.load(f)
+
+    assert len(data) == 2
+    assert data[0]["name"] == "Alice"
+    assert data[0]["age"] == "22"
+    assert data[1]["name"] == "Bob"
+    assert data[1]["age"] == "25"
+
+
+"""Конвертация CSV с множественными полями"""
+def test_csv_to_json_multiple_fields(tmp_path: Path):
+    src = tmp_path / "data.csv"
+    dst = tmp_path / "data.json"
+
+    with src.open("w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["id", "name", "city", "salary"])
+        writer.writeheader()
+        writer.writerow(
+            {"id": "1", "name": "John", "city": "Moscow", "salary": "50000"}
+        )
+        writer.writerow({"id": "2", "name": "Jane", "city": "Paris", "salary": "60000"})
+
+    csv_to_json(str(src), str(dst))
+
+    with dst.open(encoding="utf-8") as f:
+        data = json.load(f)
+
+    assert len(data) == 2
+    assert set(data[0].keys()) == {"id", "name", "city", "salary"}
+
+
+"""Тест UTF-8"""
+def test_csv_to_json_cyrillic(tmp_path: Path):
+    src = tmp_path / "russian.csv"
+    dst = tmp_path / "russian.json"
+
+    with src.open("w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["имя", "возраст"])
+        writer.writeheader()
+        writer.writerow({"имя": "Алексей", "возраст": "30"})
+        writer.writerow({"имя": "Мария", "возраст": "28"})
+
+    csv_to_json(str(src), str(dst))
+
+    with dst.open(encoding="utf-8") as f:
+        data = json.load(f)
+
+    assert len(data) == 2
+    assert data[0]["имя"] == "Алексей"
+    assert data[1]["имя"] == "Мария"
+
+
+"""Файл не существует"""
+def test_csv_to_json_file_not_found(tmp_path: Path):
+    src = tmp_path / "nonexistent.csv"
+    dst = tmp_path / "output.json"
+
+    with pytest.raises(FileNotFoundError):
+        csv_to_json(str(src), str(dst))
+
+
+"""Пустой CSV файл"""
+def test_csv_to_json_empty_file(tmp_path: Path):
+    src = tmp_path / "empty.csv"
+    dst = tmp_path / "output.json"
+
+    src.write_text("", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="пуст"):
+        csv_to_json(str(src), str(dst))
+
+
+"""Только заголовок без данных"""
+def test_csv_to_json_only_header(tmp_path: Path):
+    src = tmp_path / "header_only.csv"
+    dst = tmp_path / "output.json"
+
+    with src.open("w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["name", "age"])
+        writer.writeheader()
+
+    with pytest.raises(ValueError, match="пуст"):
+        csv_to_json(str(src), str(dst))
+
+
+"""Неверное расширение файла"""
+def test_csv_to_json_wrong_extension(tmp_path: Path):
+
+    src = tmp_path / "file.txt"
+    dst = tmp_path / "output.json"
+
+    with pytest.raises(TypeError, match="расширение"):
+        csv_to_json(str(src), str(dst))
+
+
+"""Неверное расширение для JSON"""
+def test_csv_to_json_wrong_json_extension(tmp_path: Path):
+    src = tmp_path / "file.csv"
+    dst = tmp_path / "output.txt"
+
+    src.write_text("name,age\ntest,25", encoding="utf-8")
+
+    with pytest.raises(TypeError, match="расширение"):
+        csv_to_json(str(src), str(dst))
+```
+![pic2](./images/lab07/test.png)
+## Задание C 
+![pic](./images/lab07/black-.png)
+![pic1](./images/lab07/black+.png)
 # Лабораторная работа 6
 ## Задание 1
 ```python

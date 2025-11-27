@@ -2,7 +2,7 @@ import sys
 import os
 from pathlib import Path
 
-lib_path = Path(__file__).parent.parent / 'lib'
+lib_path = Path(__file__).parent.parent / "lib"
 sys.path.insert(0, str(lib_path))
 
 from lib.text import tokenize, normalize, count_freq, top_n
@@ -13,11 +13,11 @@ def read_stdin() -> str:
 
 
 def stats(colvo_slov: int, unik_slova: int, top_items):
-    print(f'Всего слов: {colvo_slov}')
-    print(f'Уникальных слов: {unik_slova}')
-    print('Топ-5:')
+    print(f"Всего слов: {colvo_slov}")
+    print(f"Уникальных слов: {unik_slova}")
+    print("Топ-5:")
     for word, count in top_items:
-        print(f'{word}:{count}')
+        print(f"{word}:{count}")
 
 
 def main():
@@ -29,5 +29,5 @@ def main():
     stats(len(tokens), len(set(tokens)), top)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

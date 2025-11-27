@@ -4,50 +4,54 @@ from pathlib import Path
 import os, sys
 
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from lib.text import tokenize, normalize, top_n, count_freq
 
 
-
 def read_text(path: str | Path, encoding: str = "utf-8") -> str:
     """
-    Читаем текст из файла 
+    Читаем текст из файла
     + обрабатваем несущестыующий файл
     """
     try:
         p = Path(path)
         return p.read_text(encoding=encoding)
     except FileNotFoundError:
-        print('Файл не существует')
+        print("Файл не существует")
         sys.exit(1)
 
 
-nova_str = read_text("data/lab04/input.txt") #уместна проверка на txt файл
-#arg - подаваемое значение в функцию 
-#if arg[-1:-3] == 'txt' or 'csv = norm 
-#Проходит условие, можно рабоать дальше 
+nova_str = read_text("data/lab04/input.txt")  # уместна проверка на txt файл
+# arg - подаваемое значение в функцию
+# if arg[-1:-3] == 'txt' or 'csv = norm
+# Проходит условие, можно рабоать дальше
 
 
 def frequencies_from_text(text: str) -> dict[str, int]:
     tokens = tokenize(normalize(text))
-    return Counter(tokens) 
+    return Counter(tokens)
+
 
 def sorted_word(freq: dict[str, int]) -> list[tuple[str, int]]:
     return sorted(freq.items(), key=lambda x: (-x[1], x[0]))
 
-def report_csv(word_counts: list[tuple[str, int]], path: str | Path = "report.csv") -> None:
+
+def report_csv(
+    word_counts: list[tuple[str, int]], path: str | Path = "report.csv"
+) -> None:
     """
     Создаем отчет csv файлом
-    word_counts: список кортежей 
-    path: путь, по которому будет сохраняться отчет csv 
+    word_counts: список кортежей
+    path: путь, по которому будет сохраняться отчет csv
     """
     p = Path(path)
-    with p.open("w", newline='', encoding="utf-8") as f:
+    with p.open("w", newline="", encoding="utf-8") as f:
         l = csv.writer(f)
         l.writerow(("word", "count"))
         for word, count in word_counts:
             l.writerow((word, count))
+
 
 sorted_list = sorted_word(frequencies_from_text(nova_str))
 

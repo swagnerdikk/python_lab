@@ -1,7 +1,158 @@
 # laboratoriti
 
+# Лаборатораня работа 8
+## Задание A
+```python
+from dataclasses import dataclass
+from datetime import datetime, date
 
 
+@dataclass
+class Student:
+    fio: str
+    birthdate: str
+    group: str
+    gpa: float
+
+    def __post_init__(self):
+        """Валидация формата даты и диапазона gpa"""
+        try:
+            datetime.strptime(self.birthdate, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError("Неверный формат даты")
+        
+        if not (0 <= self.gpa <= 5):
+            raise ValueError("gpa должен быть от 0 до 5")
+
+    def age(self) -> int:
+        """Возвращает количество полных лет студента"""
+        birth_date = datetime.strptime(self.birthdate, "%Y-%m-%d").date()
+        today = date.today()
+        age = today.year - birth_date.year
+        
+        """Проверка на др в этом году"""
+        if today.month < birth_date.month or (today.month == birth_date.month and today.day < birth_date.day):
+            age -= 1
+        
+        return age
+
+    def to_dict(self) -> dict:
+        """Сериализация объекта Student в словарь"""
+
+        name_parts = self.fio.strip().split()
+        name_surname = " ".join(name_parts[:2]) if len(name_parts) >= 2 else self.fio
+        
+        return {
+            "fio": name_surname,
+            "birthdate": self.birthdate,
+            "group": self.group,
+            "gpa": self.gpa
+        }
+
+    @classmethod
+    def from_dict(cls, d: dict):
+        """Десериализация словаря в объект Student"""
+        return cls(
+            fio=d["fio"],
+            birthdate=d["birthdate"],
+            group=d["group"],
+            gpa=d["gpa"]
+        )
+
+    def __str__(self):
+        """Красивый вывод информации о студенте"""
+        return f"Студент: {self.fio}, Группа: {self.group}, GPA: {self.gpa}, Возраст: {self.age()} лет"
+
+
+if __name__ == "__main__":
+    student = Student(
+        fio="Виноградов Антон Зумерович",
+        birthdate="2006-05-15",
+        group="BBIT-06-1",
+        gpa=4.5
+    )
+    print(student)
+    print(f"Словарь: {student.to_dict()}")
+```
+![A](./images/lab08/A.png)
+
+## Задание B
+```python
+import json
+import sys
+from pathlib import Path
+from typing import List
+
+try:
+    from .models import Student
+except (ImportError, ValueError):
+    
+    project_root = Path(__file__).parent.parent.parent
+    sys.path.insert(0, str(project_root))
+    from src.lab08.models import Student
+
+
+def students_to_json(students: List[Student], path: str) -> None:
+    """
+    Сохраняет список студентов в JSON файл.
+    """
+    data = [s.to_dict() for s in students]
+    
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except IOError as e:
+        raise IOError(f"Ошибка при записи файла: {e}")
+
+
+def students_from_json(path: str) -> List[Student]:
+    """
+    Читает JSON-массив, валидирует данные и создаёт список Student.
+    """
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Файл не найден: {path}")
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Неверный формат JSON: {e}")
+    
+    if not isinstance(data, list):
+        raise ValueError("JSON должен содержать список объектов")
+    
+    students = []
+    for i, item in enumerate(data):
+        if not isinstance(item, dict):
+            raise ValueError(f"Элемент {i} должен быть словарём")
+            
+        try:
+            student = Student.from_dict(item)
+            students.append(student)
+        except (KeyError, ValueError) as e:
+            raise ValueError(f"Ошибка при создании Student из элемента {i}: {e}")
+    
+    return students
+
+
+if __name__ == "__main__":
+
+    from pathlib import Path
+    
+    project_root = Path(__file__).parent.parent.parent
+    input_path = project_root / "data" / "lab08" / "students_input.json"
+    output_path = project_root / "data" / "lab08" / "students_output.json"
+    
+    students = students_from_json(str(input_path))
+    
+    for student in students:
+        print(f"• {student}")
+    
+    students_to_json(students, str(output_path))
+```
+### Исходный json
+![isx](./images/lab08/B1.png)
+### Выходной json
+![vix](./images/lab08/B2.png)
 # Лаборатораня работа 7 
 ## Задание A
 ```python 

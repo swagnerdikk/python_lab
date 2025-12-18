@@ -83,7 +83,7 @@ class SinglyLinkedList:
         self._size -= 1
 
     def _node_at(self, idx: int) -> Node:
-        """Возвращает узел по индексу (внутренний помощник, без проверок границ)"""
+        """Возвращает узел по индексу"""
         current = self.head
         for _ in range(idx):
             assert current is not None  # для mypy/pyright

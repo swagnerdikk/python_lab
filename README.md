@@ -1,6 +1,210 @@
 # laboratoriti
+# Лабораторная работа 10
+## Задание A
+```python 
+from collections import deque
+from typing import Any, Deque, Iterable
 
 
+class Stack:
+    """
+    Простой стек (LIFO) на базе списка
+    Вершина стека — правый край списка
+    """
+
+    def __init__(self, items: Iterable[Any] | None = None) -> None:
+        """Можно инициализировать готовой последовательностью"""
+        self._data: list[Any] = list(items) if items is not None else []
+
+    def push(self, item: Any) -> None:
+        """Добавляет элемент на вершину стека"""
+        self._data.append(item)
+
+    def pop(self) -> Any:
+        """
+        Снимает верхний элемент стека
+        Поднимает IndexError, если стек пуст
+        """
+        if self.is_empty():
+            raise IndexError("Невозможно выполнить pop: стек пуст")
+        return self._data.pop()
+
+    def peek(self) -> Any | None:
+        """
+        Возвращает верхний элемент без удаления
+        Если стек пуст — None
+        """
+        if self.is_empty():
+            return None
+        return self._data[-1]
+
+    def is_empty(self) -> bool:
+        """True, если стек пуст"""
+        return len(self._data) == 0
+
+    def __len__(self) -> int:
+        return len(self._data)
+
+    def __repr__(self) -> str:
+        return f"Stack({self._data!r})"
+
+
+class Queue:
+    """
+    Очередь FIFO на базе collections.deque
+    Голова очереди — левый край deque
+    """
+
+    def __init__(self, items: Iterable[Any] | None = None) -> None:
+        """Можно инициализировать готовой последовательностью"""
+        self._data: Deque[Any] = deque(items or [])
+
+    def enqueue(self, item: Any) -> None:
+        """Добавляет элемент в конец очереди"""
+        self._data.append(item)
+
+    def dequeue(self) -> Any:
+        """
+        Извлекает элемент из начала очереди
+        Поднимает IndexError, если очередь пуста
+        """
+        if self.is_empty():
+            raise IndexError("Невозможно выполнить dequeue: очередь пуста")
+        return self._data.popleft()
+
+    def peek(self) -> Any | None:
+        """
+        Возвращает первый элемент без удаления
+        Если очередь пуста — None
+        """
+        if self.is_empty():
+            return None
+        return self._data[0]
+
+    def is_empty(self) -> bool:
+        """True, если очередь пуста"""
+        return len(self._data) == 0
+
+    def __len__(self) -> int:
+        return len(self._data)
+
+    def __repr__(self) -> str:
+        return f"Queue({list(self._data)!r})"
+```
+## Звдание B
+```python
+from typing import Any, Iterator, Optional
+
+
+class Node:
+    """Узел односвязного списка"""
+
+    def __init__(self, value: Any, next: Optional["Node"] = None) -> None:
+        self.value = value
+        self.next = next
+
+    def __repr__(self) -> str:
+        return f"Node({self.value!r})"
+
+
+class SinglyLinkedList:
+    """
+    Односвязный список
+    Поддерживает добавление в конец или вначало, вставку по индексу и удаление по индексу
+    """
+
+    def __init__(self) -> None:
+        self.head: Optional[Node] = None
+        self.tail: Optional[Node] = None
+        self._size: int = 0
+
+    def append(self, value: Any) -> None:
+        """Добавить элемент в конец списка за O(1) с учётом tail"""
+        new_node = Node(value)
+        if self.head is None:
+            self.head = self.tail = new_node
+        else:
+            assert self.tail is not None  # для типа
+            self.tail.next = new_node
+            self.tail = new_node
+        self._size += 1
+
+    def prepend(self, value: Any) -> None:
+        """Добавить элемент в начало списка за O(1)"""
+        new_node = Node(value, next=self.head)
+        self.head = new_node
+        if self.tail is None:
+            self.tail = new_node
+        self._size += 1
+
+    def insert(self, idx: int, value: Any) -> None:
+        """
+        Вставить элемент по индексу
+        Допустимы idx == 0 (в начало) и idx == len(list) (в конец)
+        """
+        if idx < 0 or idx > self._size:
+            raise IndexError("Индекс вне диапазона")
+        if idx == 0:
+            self.prepend(value)
+            return
+        if idx == self._size:
+            self.append(value)
+            return
+
+        prev = self._node_at(idx - 1)
+        new_node = Node(value, next=prev.next)
+        prev.next = new_node
+        self._size += 1
+
+    def remove_at(self, idx: int) -> None:
+        """Удалить элемент по индексу. Поднимает IndexError при неверном индексе"""
+        if idx < 0 or idx >= self._size:
+            raise IndexError("Индекс вне диапазона")
+
+        if idx == 0:
+            assert self.head is not None
+            self.head = self.head.next
+            if self.head is None:
+                self.tail = None
+            self._size -= 1
+            return
+
+        prev = self._node_at(idx - 1)
+        assert prev.next is not None
+        to_remove = prev.next
+        prev.next = to_remove.next
+        if prev.next is None:
+            self.tail = prev
+        self._size -= 1
+
+    def _node_at(self, idx: int) -> Node:
+        """Возвращает узел по индексу (внутренний помощник, без проверок границ)"""
+        current = self.head
+        for _ in range(idx):
+            assert current is not None  # для mypy/pyright
+            current = current.next
+        assert current is not None
+        return current
+
+    def __iter__(self) -> Iterator[Any]:
+        current = self.head
+        while current is not None:
+            yield current.value
+            current = current.next
+
+    def __len__(self) -> int:
+        return self._size
+
+    def __repr__(self) -> str:
+        values = ", ".join(repr(v) for v in self)
+        return f"SinglyLinkedList([{values}])"
+```
+### deque
+![deque](./images/lab10/deque.png)
+### singly
+![singly](./images/lab10/singly.png)
+### stack 
+![stack](./images/lab10/stack.png)
 # Лабораторная работа 9 
 ## Задание A
 ```python
